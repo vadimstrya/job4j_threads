@@ -12,54 +12,74 @@ public class Wget implements Runnable {
 
     private final String url;
     private final int speed;
+    private final String path;
 
-    public Wget(String url, int speed) {
+    public Wget(String url, int speed, String path) {
         this.url = url;
         this.speed = speed;
+        this.path = path;
     }
 
     @Override
     public void run() {
-        var startAt = System.currentTimeMillis();
-        var file = new File("tmp.xml");
+        var file = new File(path);
         var bufferSize = 512;
 
         try (var input = new URL(url).openStream();
              var output = new FileOutputStream(file)) {
-            System.out.println("Open connection: " + (System.currentTimeMillis() - startAt) + " ms");
             var dataBuffer = new byte[bufferSize];
-            int bytesRead;
-            while ((bytesRead = input.read(dataBuffer, 0, dataBuffer.length)) != -1) {
-                var downloadAt = System.nanoTime();
-                output.write(dataBuffer, 0, bytesRead);
-                var downloadTime = System.nanoTime() - downloadAt;
-                var downloadSpeed = (int) ((double) bufferSize / downloadTime * 1_000_000);
-                System.out.println("Read " + bufferSize + " bytes: time = " + downloadTime + " nanosecond, speed = " + downloadSpeed + " byte/millisecond");
+            var bytesRead = 0;
+            var downloadByte = 0;
+            var downloadStart = System.currentTimeMillis();
 
-                if (downloadSpeed > speed) {
-                    var sleepTime = (int) ((double) downloadSpeed / speed);
-                    System.out.println("Thread sleep on " + sleepTime + " millisecond");
-                    Thread.sleep(sleepTime);
+            while ((bytesRead = input.read(dataBuffer, 0, dataBuffer.length)) != -1) {
+                output.write(dataBuffer, 0, bytesRead);
+                downloadByte += bytesRead;
+
+                if (downloadByte >= speed) {
+                    var downloadTime = System.currentTimeMillis() - downloadStart;
+                    System.out.println("Загружено " + downloadByte + " byte за " + downloadTime + " ms");
+
+                    if (downloadTime < 1000) {
+                        var pauseTime = 1000 - downloadTime;
+                        System.out.println("Пауза на " + pauseTime + " ms");
+                        Thread.sleep(pauseTime);
+                    }
+                    downloadByte = 0;
+                    downloadStart = System.currentTimeMillis();
                 }
             }
-            System.out.println(Files.size(file.toPath()) + " bytes");
+            System.out.println("Размер загруженного файла: " + Files.size(file.toPath()) + " bytes");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    private static void validateArgs(String[] args) {
+        if (args == null || args.length < 3) {
+            throw new RuntimeException(String.format("Укажите аргументы запуска в формате: [%s] [%s] [%s]",
+                    "URL", "Скорость загрузки, byte/sec", "Путь сохранения файла"));
+        }
+
+        String url = args[0];
+        if (!UrlValidator.getInstance().isValid(url)) {
+            throw new RuntimeException("Укажите валидный URL");
+        }
+
+        int speed = Integer.parseInt(args[1]);
+        if (speed <= 0) {
+            throw new RuntimeException("Скорость загрузки должна быть больше 0");
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
+        validateArgs(args);
+
         String url = args[0];
         int speed = Integer.parseInt(args[1]);
-
-        if (!UrlValidator.getInstance().isValid(url)) {
-            System.out.println("Введите валидный URL");
-        } else if (speed <= 0) {
-            System.out.println("Скорость загрузки должна быть больше 0");
-        } else {
-            Thread wget = new Thread(new Wget(url, speed));
-            wget.start();
-            wget.join();
-        }
+        String path = args[2];
+        Thread wget = new Thread(new Wget(url, speed, path));
+        wget.start();
+        wget.join();
     }
 }

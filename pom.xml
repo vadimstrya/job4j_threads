@@ -49,11 +49,19 @@
             <artifactId>commons-validator</artifactId>
             <version>1.9.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.jcip/jcip-annotations -->
+        <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
         <dependency>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-            <version>1.0</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.26.3</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -67,7 +75,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <id>validate</id>
@@ -88,7 +96,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <goals>

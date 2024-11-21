@@ -1,7 +1,7 @@
 package ru.job4j.synch;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class SimpleBlockingQueueTest {
                         try {
                             queue.offer(index);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            Thread.currentThread().interrupt();
                         }
                     }
                 }
@@ -68,7 +68,6 @@ public class SimpleBlockingQueueTest {
                         try {
                             buffer.add(queue.poll());
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
                             Thread.currentThread().interrupt();
                         }
                     }

@@ -22,6 +22,30 @@ class ParallelSearchTest {
     }
 
     @Test
+    public void whenSizeMoreThan10AndFoundLast() {
+        String[] array = new String[]{
+                "Privet", "Bonjour", "Hello",
+                "Privet2", "Bonjour2", "Hello2",
+                "Privet3", "Bonjour3", "Hello3",
+                "Privet4", "Bonjour", "Hello4"
+        };
+        String obj = "Hello4";
+        assertThat(ParallelSearch.search(obj, array)).isEqualTo(11);
+    }
+
+    @Test
+    public void whenSizeMoreThan10AndFoundFirst() {
+        String[] array = new String[]{
+                "Privet", "Bonjour", "Hello",
+                "Privet2", "Bonjour2", "Hello2",
+                "Privet3", "Bonjour3", "Hello3",
+                "Privet4", "Bonjour", "Hello4"
+        };
+        String obj = "Privet";
+        assertThat(ParallelSearch.search(obj, array)).isEqualTo(0);
+    }
+
+    @Test
     public void whenSizeLessThan10AndFound() {
         String[] array = new String[]{
                 "Privet", "Bonjour", "Hello",

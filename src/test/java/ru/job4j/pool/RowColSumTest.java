@@ -15,14 +15,13 @@ class RowColSumTest {
                 {1, 2, 3},
                 {1, 2, 3}
         };
-        RowColSum.Sums[] sums = RowColSum.sum(matrix);
-        assertThat(sums.length).isEqualTo(3);
-        assertThat(sums[0].getRowSum()).isEqualTo(6);
-        assertThat(sums[1].getRowSum()).isEqualTo(6);
-        assertThat(sums[2].getRowSum()).isEqualTo(6);
-        assertThat(sums[0].getColSum()).isEqualTo(3);
-        assertThat(sums[1].getColSum()).isEqualTo(6);
-        assertThat(sums[2].getColSum()).isEqualTo(9);
+        Sums[] expected = new Sums[]{
+                new Sums(6, 3),
+                new Sums(6, 6),
+                new Sums(6, 9),
+        };
+        Sums[] actual = RowColSum.sum(matrix);
+        assertThat(expected).isEqualTo(actual);
     }
 
     @Test
@@ -32,13 +31,12 @@ class RowColSumTest {
                 {1, 2, 3},
                 {1, 2, 3}
         };
-        RowColSum.Sums[] sums = RowColSum.asyncSum(matrix);
-        assertThat(sums.length).isEqualTo(3);
-        assertThat(sums[0].getRowSum()).isEqualTo(6);
-        assertThat(sums[1].getRowSum()).isEqualTo(6);
-        assertThat(sums[2].getRowSum()).isEqualTo(6);
-        assertThat(sums[0].getColSum()).isEqualTo(3);
-        assertThat(sums[1].getColSum()).isEqualTo(6);
-        assertThat(sums[2].getColSum()).isEqualTo(9);
+        Sums[] expected = new Sums[]{
+                new Sums(6, 3),
+                new Sums(6, 6),
+                new Sums(6, 9),
+        };
+        Sums[] actual = RowColSum.asyncSum(matrix);
+        assertThat(expected).isEqualTo(actual);
     }
 }
